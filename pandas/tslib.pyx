@@ -1145,7 +1145,10 @@ cdef class _Timestamp(datetime):
         return datetime.__sub__(self, other)
 
     cpdef _get_field(self, field):
-        out = get_date_field(np.array([self.value], dtype=np.int64), field)
+        value = self.value
+        if self.tz is not pytz.utc:
+            value = self.replace(tzinfo=pytz.utc).value
+        out = get_date_field(np.array([value], dtype=np.int64), field)
         return int(out[0])
 
     cpdef _get_start_end_field(self, field):

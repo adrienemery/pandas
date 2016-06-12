@@ -536,6 +536,30 @@ class TestTimestamp(tm.TestCase):
         check(ts.daysinmonth, 31)
         check(ts.daysinmonth, 31)
 
+    def test_fields_with_tz(self):
+        """Timezone aware Timestamps should have their fields
+        calculated in the timezone they are defined in
+        """
+        def check(value, equal):
+            # that we are int/long like
+            self.assertEqual(value, equal)
+
+        # GH 13303
+        ts = Timestamp('2015-12-31 23:06:03.000100001', tz='US/Pacific')
+        check(ts.year, 2015)
+        check(ts.month, 12)
+        check(ts.day, 31)
+        check(ts.hour, 23)
+        check(ts.minute, 6)
+        check(ts.second, 3)
+        check(ts.microsecond, 100)
+        check(ts.nanosecond, 1)
+        check(ts.dayofweek, 3)
+        check(ts.quarter, 4)
+        check(ts.dayofyear, 365)
+        check(ts.week, 53)
+        check(ts.daysinmonth, 31)
+
     def test_nat_fields(self):
         # GH 10050
         ts = Timestamp('NaT')
